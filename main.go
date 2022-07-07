@@ -28,8 +28,8 @@ type Credentials struct {
 var usersMap map[string][]byte = make(map[string][]byte)
 
 func Signup(w http.ResponseWriter, r *http.Request) {
-	creds := &Credentials{}
-	err := json.NewDecoder(r.Body).Decode(creds) //
+	creds := &Credentials{}                      //sets creds to a pointer to Credintals struct
+	err := json.NewDecoder(r.Body).Decode(creds) //this decodes the jason request
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
