@@ -49,6 +49,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	creds := &Credentials{}
 	err := json.NewDecoder(r.Body).Decode(creds) //
 	if err != nil {
+		log.Printf("Json Decoder Error %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -56,6 +57,7 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 	if hashed, ok := usersMap[creds.Username]; ok {
 		// compare hash and
 		if err = bcrypt.CompareHashAndPassword(hashed, []byte(creds.Password)); err != nil {
+			log.Printf("bcrypt Hash Error %v", err)
 
 			w.WriteHeader(http.StatusUnauthorized)
 			return
@@ -65,6 +67,8 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 			h := sha256.New()
 			_, err := h.Write(token.Bytes())
 			if err != nil {
+				log.Printf("Token return Error %v", err)
+
 				w.WriteHeader(http.StatusBadGateway)
 				return
 			}
@@ -74,6 +78,8 @@ func Signin(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
+		log.Printf("Bad Request Error %v", err)
+
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
